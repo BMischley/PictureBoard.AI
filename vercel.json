@@ -1,9 +1,0 @@
-{
-  "functions": {
-    "api/openai.ts": {
-      "memory": 3008,
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [{ "source": "/api/openai", "destination": "/api/openai" }]
-}

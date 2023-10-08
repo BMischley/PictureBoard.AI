@@ -5,7 +5,13 @@ import { useAuthStore } from "@/stores/AuthStore";
 import PlusIcon from "@/components/misc/PlusIcon";
 import MinusIcon from "@/components/misc/MinusIcon";
 
-function NavElement( {matrix, setMatrix} : {matrix: string[][], setMatrix: any} ) {
+function NavElement({
+  matrix,
+  setMatrix,
+}: {
+  matrix: string[][];
+  setMatrix: any;
+}) {
   const loading = useAuthStore((state) => state.loading);
 
   const addColumn = () => {
@@ -32,12 +38,15 @@ function NavElement( {matrix, setMatrix} : {matrix: string[][], setMatrix: any} 
     }
   };
 
-  const handleInputChange = (rowIndex: number, colIndex: number, value: string) => {
+  const handleInputChange = (
+    rowIndex: number,
+    colIndex: number,
+    value: string
+  ) => {
     const newMatrix = [...matrix];
     newMatrix[rowIndex][colIndex] = value;
     setMatrix(newMatrix);
   };
-
 
   return (
     <>
@@ -59,21 +68,29 @@ function NavElement( {matrix, setMatrix} : {matrix: string[][], setMatrix: any} 
           </div>
         ))}
         <div className="h-fit block my-auto">
-          <button onClick={removeRow} className="self-center mt-2">
-            <MinusIcon />
-          </button>
-          <button onClick={addRow} className="self-center mt-2">
-            <PlusIcon />
-          </button>
+          {matrix.length > 1 && (
+            <button onClick={removeRow} className="self-center mt-2">
+              <MinusIcon />
+            </button>
+          )}
+          {matrix.length < 5 && (
+            <button onClick={addRow} className="self-center mt-2">
+              <PlusIcon />
+            </button>
+          )}
         </div>
       </div>
       <div className="w-fit mx-auto">
-        <button onClick={removeColumn} className="self-center mt-2">
-          <MinusIcon />
-        </button>
-        <button onClick={addColumn} className="self-center mt-2">
-          <PlusIcon />
-        </button>
+        {matrix[0]?.length > 1 && (
+          <button onClick={removeColumn} className="self-center mt-2">
+            <MinusIcon />
+          </button>
+        )}
+        {matrix[0]?.length < 5 && (
+          <button onClick={addColumn} className="self-center mt-2">
+            <PlusIcon />
+          </button>
+        )}
       </div>
     </>
   );

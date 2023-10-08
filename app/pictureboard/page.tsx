@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Submit from "@/components/pictureboard/Submit";
-
+import Display from "@/components/pictureboard/Display";
 import { useAuthStore } from "@/stores/AuthStore";
 import { Sub } from "@radix-ui/react-navigation-menu";
 import axios from "axios";
@@ -32,6 +32,7 @@ async function fetchImage(prompt: string): Promise<string | null> {
 export default function Home() {
   const [matrix, setMatrix] = useState([[""]]);
   const [images, setImages] = useState<any[][]>([[]]);
+  const [submitted, setSubmitted] = useState(false); // TODO: use this to show the images
   const setLoading = useAuthStore((state) => state.setLoading);
   const handleFetchImages = async () => {
     setLoading(true);
@@ -44,15 +45,16 @@ export default function Home() {
     // wait for all promises to resolve
 
     Promise.all(imagePromises)
-    .then((newImages) => {
-      console.log(newImages); // log new images
-      setImages(newImages); // set the images state
-      setLoading(false); // turn off loading spinner
-    })
-    .catch((error) => {
-      console.error(error); // log any error that occurred during the promises
-      setLoading(false); // ensure loading spinner is turned off even if there's an error
-    });
+      .then((newImages) => {
+        console.log(newImages); // log new images
+        setImages(newImages); // set the images state
+        setLoading(false); // turn off loading spinner
+        setSubmitted(true);
+      })
+      .catch((error) => {
+        console.error(error); // log any error that occurred during the promises
+        setLoading(false); // ensure loading spinner is turned off even if there's an error
+      });
 
     setLoading(false);
   };
@@ -64,28 +66,29 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-24 bg-gray-200">
       <div>
-        <Submit matrix={matrix} setMatrix={setMatrix} />
+        {submitted ? (
+          <Display images={images} captions={matrix} />
+        ) : (
+          <Submit matrix={matrix} setMatrix={setMatrix} />
+        )}
 
         <div className="flex justify-center mt-8">
-          <button
-            className="px-4 py-2 text-white bg-primary-teal rounded hover:bg-teal-500"
-            onClick={handleFetchImages}
-          >
-            Submit
-          </button>
+          {submitted ? (
+            <button
+              className="px-4 py-2 text-white bg-primary-teal rounded hover:bg-teal-500"
+              onClick={() => setSubmitted(false)}
+            >
+              Go Back
+            </button>
+          ) : (
+            <button
+              className="px-4 py-2 text-white bg-primary-teal rounded hover:bg-teal-500"
+              onClick={handleFetchImages}
+            >
+              Submit
+            </button>
+          )}
         </div>
-        {images.map((row, rowIndex) => (
-          <div key={rowIndex} className="image-row">
-            {row.map((image, imageIndex) => (
-              <img
-                key={imageIndex}
-                src={image}
-                className="w-32 h-32 m-2"
-                alt={`Image ${rowIndex}-${imageIndex}`}
-              />
-            ))}
-          </div>
-        ))}
       </div>
     </main>
   );

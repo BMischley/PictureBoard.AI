@@ -33,10 +33,10 @@ export default function Home() {
   const [matrix, setMatrix] = useState([[""]]);
   const [images, setImages] = useState<any[][]>([[]]);
   const [submitted, setSubmitted] = useState(false); // TODO: use this to show the images
+  const [isCooking, setIsCooking] = useState(false); // TODO: use this to show the images
   const setLoading = useAuthStore((state) => state.setLoading);
   const handleFetchImages = async () => {
-    setLoading(true);
-
+    setIsCooking(true);
     // map over the matrix to create a 2D array of promises
     const imagePromises = matrix.map(
       (row) => Promise.all(row.map((item) => fetchImage(item))) // for each item in the row, call fetchImage
@@ -48,15 +48,13 @@ export default function Home() {
       .then((newImages) => {
         console.log(newImages); // log new images
         setImages(newImages); // set the images state
-        setLoading(false); // turn off loading spinner
+        setIsCooking(false);
         setSubmitted(true);
       })
       .catch((error) => {
         console.error(error); // log any error that occurred during the promises
-        setLoading(false); // ensure loading spinner is turned off even if there's an error
+        setIsCooking(false); // ensure loading spinner is turned off even if there's an error
       });
-
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -65,6 +63,20 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-24 bg-gray-200">
+      <div className="-mt-64 mb-24">
+        <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
+          Generate a Picture Board
+        </h1><div className="w-fit mx-auto mt-2">
+        <p className="text-left text-sm ">1. Click the + icon to increase dimensions.</p>
+        <p className="text-left text-sm">2. Click the - icon to reduce dimensions.</p>
+        <p className="text-left text-sm">3. Type your desired image prompt in the input field.</p>
+        <p className="text-left text-sm">4. Once ready, click submit!</p>
+        </div>
+       
+
+
+
+      </div>
       <div>
         {submitted ? (
           <Display images={images} captions={matrix} />
@@ -75,17 +87,21 @@ export default function Home() {
         <div className="flex justify-center mt-8">
           {submitted ? (
             <button
-              className="px-4 py-2 text-white bg-primary-teal rounded hover:bg-teal-500"
+              className="!h-10 !w-32 text-white bg-primary-teal rounded hover:bg-teal-500"
               onClick={() => setSubmitted(false)}
             >
               Go Back
             </button>
           ) : (
             <button
-              className="px-4 py-2 text-white bg-primary-teal rounded hover:bg-teal-500"
+              className="!h-10 !w-32 text-white bg-primary-teal rounded hover:bg-teal-500"
               onClick={handleFetchImages}
             >
-              Submit
+              {isCooking ? (
+                <span className="loading loading-dots  mx-auto  bg-tertiary-navy "></span>
+              ) : (
+                "Submit"
+              )}
             </button>
           )}
         </div>

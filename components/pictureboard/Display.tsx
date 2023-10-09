@@ -18,13 +18,13 @@ function NavElement({
         {images.map((row, rowIndex) => (
           <div key={rowIndex} className="flex flex-col">
             {row.map((col, colIndex) => (
-              <div key={colIndex} className="relative m-2">
+              <div key={colIndex} className="relative m-2 w-44 bg-white p-3 rounded-xl">
                 <img
                   src={col}
-                  className="w-32 h-32 m-2"
+                  className="w-32 h-32 m-2 rounded-lg mx-auto"
                   alt={`Image ${rowIndex}-${colIndex}`}
                 />
-                <p>{captions[rowIndex][colIndex]}</p>
+                <p className="text-center text-lg font-bold break-words">{captions[rowIndex][colIndex]}</p>
               </div>
             ))}
           </div>

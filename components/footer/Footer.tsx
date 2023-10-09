@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "public/next.svg";
+import Logo from "public/PictureboardAILogo.png";
 import Image from "next/image";
 
 import MobileFooter from "./MobileFooter";
@@ -36,7 +36,7 @@ function Footer() {
   const legalLinks = [
     { label: "Privacy Policy", link: "/legal/privacy" },
     { label: "Terms of Service", link: "/legal/terms" },
-    { label: "Sitemap", link: "/" },
+  
   ].map((title) => (
     <li key={title.label}>
       <Link
@@ -63,20 +63,18 @@ function Footer() {
             <div className="font-semibold text-lg">Legal</div>
             <ul>{legalLinks}</ul>
           </div>
-          
         </div>
         <div className="flex flex-row border-t-2 border-[#E7E9EC] md:mb-6 md:px-20 md:pt-5">
           <div className="flex flex-row align-middle mr-auto md:ml-0 ml-3.5 md:my-0 my-2.5">
             <Image
-              className="object-contain w-14 h-14 sm:w-20 sm:h-20 "
+              className="object-contain w-10 h-14 sm:w-20 sm:h-20 "
               src={Logo}
-              alt="MeetYourClassLogo"
+              alt="PictureBoard.AI Logo"
             />
             <p className="hidden my-auto py-0 text-[#5E6672] text-base align-middle md:block">
               Copyright © 2023 PictureBoard.AI LLC. All Rights Reserved.
             </p>
           </div>
-          
         </div>
         <div className="md:hidden">
           <MobileFooter />

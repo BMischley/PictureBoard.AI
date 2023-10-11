@@ -63,19 +63,32 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-24 bg-gray-200">
-      <div className="-mt-64 mb-24">
-        <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
-          Generate a Picture Board
-        </h1><div className="w-fit mx-auto mt-2">
-        <p className="text-left text-sm ">1. Click the + icon to increase dimensions.</p>
-        <p className="text-left text-sm">2. Click the - icon to reduce dimensions.</p>
-        <p className="text-left text-sm">3. Type your desired image prompt in the input field.</p>
-        <p className="text-left text-sm">4. Once ready, click submit!</p>
-        </div>
-       
-
-
-
+      <div className="-mt-56 mb-16">
+        {submitted ? (
+          <>
+            <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
+              Done!
+            </h1>
+          </>
+        ) : (
+          <>
+            <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
+              Generate a Picture Board
+            </h1>
+            <div className="w-fit mx-auto mt-2">
+              <p className="text-left text-sm ">
+                1. Click the + icon to increase dimensions.
+              </p>
+              <p className="text-left text-sm">
+                2. Click the - icon to reduce dimensions.
+              </p>
+              <p className="text-left text-sm">
+                3. Type your desired image prompt in the input field.
+              </p>
+              <p className="text-left text-sm">4. Once ready, click submit!</p>
+            </div>
+          </>
+        )}
       </div>
       <div>
         {submitted ? (

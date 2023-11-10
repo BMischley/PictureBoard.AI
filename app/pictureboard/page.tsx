@@ -32,9 +32,12 @@ async function fetchImage(prompt: string): Promise<string | null> {
 export default function Home() {
   const [matrix, setMatrix] = useState([[""]]);
   const [images, setImages] = useState<any[][]>([[]]);
+  const [img64Data, setImg64Data] = useState<any[][]>([[]]);
+
   const [submitted, setSubmitted] = useState(false); // TODO: use this to show the images
   const [isCooking, setIsCooking] = useState(false); // TODO: use this to show the images
   const setLoading = useAuthStore((state) => state.setLoading);
+
   const handleFetchImages = async () => {
     setIsCooking(true);
     // map over the matrix to create a 2D array of promises
@@ -43,7 +46,6 @@ export default function Home() {
     );
 
     // wait for all promises to resolve
-
     Promise.all(imagePromises)
       .then((newImages) => {
         console.log(newImages); // log new images
@@ -59,6 +61,20 @@ export default function Home() {
 
   useEffect(() => {
     console.log("Updated images state:", images);
+    console.log("matrix state:", matrix);
+
+    // Get images in base64 format to bypass CORS errors when exporting
+    const data = { data: images };
+		fetch("/api/convert/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		})
+			.then((response) => response.json())
+			.then((data) => setImg64Data(data.result));
+
   }, [images]);
 
   return (
@@ -92,7 +108,7 @@ export default function Home() {
       </div>
       <div>
         {submitted ? (
-          <Display images={images} captions={matrix} />
+          <Display images={img64Data} captions={matrix} />
         ) : (
           <Submit matrix={matrix} setMatrix={setMatrix} />
         )}

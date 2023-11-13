@@ -10,6 +10,9 @@ import { functions } from "@/firebase.config";
 import { set } from "firebase/database";
 import Link from "next/link";
 
+// const imageURL = "https://tressays.files.wordpress.com/2015/09/test-clip-art-cpa-school-test.png"
+// const testImages = [[imageURL, imageURL],[imageURL, imageURL]]
+
 interface ImageResponse {
   url: string;
 }

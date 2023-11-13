@@ -41,7 +41,7 @@ export default async function Home({ params }: { params: { id: string } }) {
         </>
       </div>
       <div>
-        <Display images={pictureboard.images} captions={pictureboard.prompts} />
+        <Display images={pictureboard.images} captions={pictureboard.prompts} id={params.id}/>
       </div>
     </main>
   );

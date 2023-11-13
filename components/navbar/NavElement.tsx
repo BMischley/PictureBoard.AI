@@ -13,7 +13,6 @@ function NavElement({
 }) {
   const currentPath = usePathname();
   const isActive = paths.includes(currentPath as string);
-  console.log(currentPath)
   return (
     <p
       className={`${

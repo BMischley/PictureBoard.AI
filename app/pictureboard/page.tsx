@@ -8,6 +8,7 @@ import axios from "axios";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/firebase.config";
 import { set } from "firebase/database";
+import Link from "next/link";
 
 interface ImageResponse {
   url: string;
@@ -34,6 +35,37 @@ export default function Home() {
   const [images, setImages] = useState<any[][]>([[]]);
   const [submitted, setSubmitted] = useState(false); // TODO: use this to show the images
   const [isCooking, setIsCooking] = useState(false); // TODO: use this to show the images
+  const [pictureBoards, setPictureBoards] = useState([
+    { name: "test", width: 10, height: 10 },
+  ]);
+  const tableStyles = {
+    boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
+    transition: "0.3s",
+    minHeight: "200px",
+    borderRadius: "5px",
+  };
+
+  const thStyles = {
+    borderBottom: "1px solid #f1f1f1",
+    background: "#eaf5f3",
+    color: "#333",
+    fontWeight: "600",
+    padding: "10px 15px",
+  };
+
+  const rowStyles: React.CSSProperties = {
+    position: "relative",
+    transition: "background-color 0.3s ease",
+    cursor: "pointer",
+  };
+
+  const viewStyles: React.CSSProperties = {
+    position: "absolute",
+    right: "15px",
+    opacity: 0,
+    transition: "opacity 0.3s ease",
+  };
+
   const setLoading = useAuthStore((state) => state.setLoading);
   const handleFetchImages = async () => {
     setIsCooking(true);
@@ -62,63 +94,62 @@ export default function Home() {
   }, [images]);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-24 bg-gray-200">
-      <div className="-mt-56 mb-16">
-        {submitted ? (
-          <>
-            <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
-              Done!
-            </h1>
-          </>
-        ) : (
-          <>
-            <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
-              Generate a Picture Board
-            </h1>
-            <div className="w-fit mx-auto mt-2">
-              <p className="text-left text-sm ">
-                1. Click the + icon to increase dimensions.
-              </p>
-              <p className="text-left text-sm">
-                2. Click the - icon to reduce dimensions.
-              </p>
-              <p className="text-left text-sm">
-                3. Type your desired image prompt in the input field.
-              </p>
-              <p className="text-left text-sm">4. Once ready, click submit!</p>
-            </div>
-          </>
-        )}
-      </div>
-      <div>
-        {submitted ? (
-          <Display images={images} captions={matrix} />
-        ) : (
-          <Submit matrix={matrix} setMatrix={setMatrix} />
-        )}
+    <>
+      <section className="flex justify-between items-center p-6 bg-white shadow-md border-t-2">
+        <h1 className="text-xl font-semibold text-gray-700">
+          Your Picture Boards
+        </h1>
+        <Link href="/pictureboard/create">
+          <button className="bg-primary-teal hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+            + Create Picture Board
+          </button>
+        </Link>
+      </section>
 
-        <div className="flex justify-center mt-8">
-          {submitted ? (
-            <button
-              className="!h-10 !w-32 text-white bg-primary-teal rounded hover:bg-teal-500"
-              onClick={() => setSubmitted(false)}
-            >
-              Go Back
-            </button>
-          ) : (
-            <button
-              className="!h-10 !w-32 text-white bg-primary-teal rounded hover:bg-teal-500"
-              onClick={handleFetchImages}
-            >
-              {isCooking ? (
-                <span className="loading loading-dots  mx-auto  bg-tertiary-navy "></span>
+      <div className="container mx-auto mt-6 min-h-screen">
+        <div style={tableStyles} className="bg-white">
+          <table className="min-w-full w-full bg-white">
+            <thead>
+              <tr>
+                <th style={thStyles}>Name of the Board</th>
+                <th style={thStyles}>Dimensions</th>
+                <th style={thStyles}> </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {pictureBoards.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={3}
+                    style={{
+                      padding: "20px",
+                      textAlign: "center",
+                      color: "#999",
+                    }}
+                    className="border-b-2"
+                  >
+                    No picture boards available.
+                  </td>
+                </tr>
               ) : (
-                "Submit"
+                pictureBoards.map((board, index) => (
+                  <tr key={index} className="tableRow" style={rowStyles}>
+                    <td className=" px-4 py-3 text-center font-semibold">
+                      {board.name}
+                    </td>
+                    <td className=" px-4 py-3 text-center ">{`${board.width} x ${board.height}`}</td>
+                    <td className=" px-4 py-3 cellWithView text-center">
+                      <span className="viewLink text-center mr-6 font-bold">
+                        View →
+                      </span>
+                    </td>
+                  </tr>
+                ))
               )}
-            </button>
-          )}
+            </tbody>
+          </table>
         </div>
       </div>
-    </main>
+    </>
   );
 }

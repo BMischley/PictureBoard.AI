@@ -92,11 +92,7 @@ export default function Home() {
         )}
       </div>
       <div>
-        {submitted ? (
-          <Display images={images} captions={matrix} />
-        ) : (
-          <Submit matrix={matrix} setMatrix={setMatrix} />
-        )}
+        
 
         <div className="flex justify-center mt-8">
           {submitted ? (

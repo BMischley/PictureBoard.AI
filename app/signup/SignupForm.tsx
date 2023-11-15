@@ -22,6 +22,7 @@ import { updateUserProfileObj } from "@/utils/user/accountMethods";
 import { useMutation } from "@tanstack/react-query";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase.config";
+import CircleBackground from "@/components/wrappers/CircleBackground";
 
 type inputs = {
   firstName: string;
@@ -128,14 +129,14 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="flex flex-col justify-center w-full ">
+    <div className="flex flex-col justify-center w-full shadow-2xl rounded-xl mt-2">
       {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full bg-white mx-auto px-6 rounded-xl"
         >
-          <div className="flex flex-row gap-6 w-full mt-12">
+          <div className="flex flex-row gap-6 w-full mt-6">
             <div className="w-1/2">
               <FormField
                 control={form.control}
@@ -280,5 +281,6 @@ export default function SignupForm() {
      
       
     </div>
+   
   );
 }

@@ -49,7 +49,7 @@ function GeneratedImage({
                 alt={`Generated Image`}
               />
             </div>
-            <p className="p-2 text-center text-sm font-medium text-black">
+            <p className="p-2 text-center text-base font-medium text-black">
               {caption}
             </p>
           </>

@@ -13,25 +13,26 @@ import GoogleLogo from "/public/GoogleLogo.svg";
 
 const reviews = [
   {
-    header: '"The best platform to meet new people"',
+    header: '"Absolutely amazing!"',
     message:
-      "PictureBoard is great!",
+      "PictureBoard is great! It let me express what I wanted to say in a way that was easy and fun!",
     name: "Blake Mischley",
     college: "Coder",
-    photo: "/landingPage/katrina-berning-student-testimonial.png",
+    photo: "/review-pictureboard.png",
   },
   {
-    header: '"The best platform to meet new people"',
+    header: '"I love it!"',
     message:
-      "PictureBoard is great!",
-    name: "Blake Mischley",
+      '"It customized the pictures to me! I could create my own style of images- a better representation of me!',
+    name: "Aidan Tucker",
     college: "Coder",
-    photo: "/landingPage/katrina-berning-student-testimonial.png",
+    photo: "/realistic-review.png",
   },
 ];
 import { useAuth } from "@/components/auth/AuthProvider";
 import { updateName } from "@/utils/user/profileMethods";
 import { useEffect, useState } from "react";
+import CircleBackground from "@/components/wrappers/CircleBackground";
 type options = EmblaOptionsType;
 
 const options: EmblaOptionsType = { containScroll: "trimSnaps" };
@@ -47,7 +48,8 @@ export default function Signup() {
   const { signInWithGoogle } = useAuth();
 
   return (
-    <div className="flex pb-16 bg-slate-100 flex-row w-full">
+    <CircleBackground size="full">
+    <div className="flex pb-16  flex-row w-full">
       <div className="lg:mx-20 md:mx-8 mx-4 flex flex-col w-full md:w-1/2 ">
         <div className="w-fit mx-auto">
           <h1 className="font-bold text-3xl mt-7 md:mt-10 ">
@@ -82,7 +84,7 @@ export default function Signup() {
                 <div
                   className="overflow-hidden relative flex-[0_0_100%] py-6"
                   key={index}
-                >x
+                >
                   <ReviewCard {...reviewProps} />
                 </div>
               );
@@ -105,5 +107,6 @@ export default function Signup() {
         </div>
       </div>
     </div>
+    </CircleBackground>
   );
 }

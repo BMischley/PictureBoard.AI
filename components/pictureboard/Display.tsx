@@ -23,23 +23,29 @@ function NavElement({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [showRedo, setShowRedo] = useState(true);
-  const exportPictureboard = useCallback(() => {
+  const exportPictureboard = () => {
+    setShowRedo(false);
+
     if (ref.current === null) {
       return;
     }
-    
+
     toPng(ref.current, { cacheBust: false })
       .then((dataUrl) => {
         const link = document.createElement("a");
         link.download = "my-image-name.png";
         link.href = dataUrl;
         link.click();
+        setShowRedo(true);
+
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [ref]);
-  console.log(images);
+
+  };
+
+  console.log(showRedo);
   const numCols = Math.min(images.length > 0 ? images[0].length : 0, 5);
   const colClass = `grid-cols-${numCols}`;
 

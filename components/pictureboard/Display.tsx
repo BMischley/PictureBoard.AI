@@ -52,12 +52,12 @@ function NavElement({
   console.log(colClass);
   return (
     <>
-      <div ref={ref} className="mx-auto p-4">
+      <div ref={ref} className="mx-auto p-4 ">
         {images.map((row, rowIndex) => (
           // Each row is a div with grid and three columns
           <div
             key={rowIndex}
-            className={`grid gap-4`}
+            className={`grid `}
             style={{
               display: "grid",
               gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))`,
@@ -65,7 +65,7 @@ function NavElement({
           >
             {row.map((image, colIndex) => (
               // Each image is an individual grid item
-              <div key={colIndex} className="grid-item w-fit mx-auto">
+              <div key={colIndex} className="grid-item w-fit mx-auto mt-6">
                 <GeneratedImage
                   image={image}
                   caption={captions[rowIndex][colIndex]}

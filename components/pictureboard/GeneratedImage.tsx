@@ -28,7 +28,7 @@ function GeneratedImage({
 
   return (
     <>
-      <div className="relative m-2 bg-white rounded-xl max-w-xs max-h-xl mx-auto">
+      <div className="relative mb-2 bg-white rounded-xl max-w-xs max-h-xl mx-auto">
         {loading ? (
           <span className="loading loading-dots mx-auto bg-tertiary-navy"></span>
         ) : (
@@ -45,11 +45,11 @@ function GeneratedImage({
             <div className="aspect-w-1 aspect-h-1">
               <img
                 src={imageData}
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full rounded-lg"
                 alt={`Generated Image`}
               />
             </div>
-            <p className="p-2 text-center text-base font-medium text-black">
+            <p className="pt-2 text-center text-lg font-medium text-black">
               {caption}
             </p>
           </>

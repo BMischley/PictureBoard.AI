@@ -5,10 +5,12 @@ import { useAuthStore } from "@/stores/AuthStore";
 import PlusIcon from "@/components/misc/PlusIcon";
 import MinusIcon from "@/components/misc/MinusIcon";
 import GeneratedImage from "./GeneratedImage";
-
+import { useState } from "react";
 import { useCallback, useRef } from "react";
 import { toBlob } from "html-to-image";
+import { toPng } from "html-to-image";
 import FileSaver from "file-saver";
+import { set } from "@firebase/database";
 
 function NavElement({
   images,
@@ -20,40 +22,49 @@ function NavElement({
   id: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-
+  const [showRedo, setShowRedo] = useState(true);
   const exportPictureboard = useCallback(() => {
     if (ref.current === null) {
       return;
     }
-
-    toBlob(ref.current)
-      .then(function (blob) {
-        if (blob !== null) {
-          FileSaver.saveAs(blob, "my-pictureboard.png");
-        }
+    
+    toPng(ref.current, { cacheBust: false })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "my-image-name.png";
+        link.href = dataUrl;
+        link.click();
       })
       .catch((err) => {
-        console.log("export error: ", err);
+        console.log(err);
       });
   }, [ref]);
   console.log(images);
   const numCols = Math.min(images.length > 0 ? images[0].length : 0, 5);
   const colClass = `grid-cols-${numCols}`;
-  const gridItemWidth = `w-full md:w-${Math.floor(12 / numCols)}/12`;
+
   console.log(colClass);
   return (
     <>
-    <div ref={ref} className="mx-auto p-4">
+      <div ref={ref} className="mx-auto p-4">
         {images.map((row, rowIndex) => (
           // Each row is a div with grid and three columns
-          <div key={rowIndex} className={`grid ${colClass} gap-4`}>
+          <div
+            key={rowIndex}
+            className={`grid gap-4`}
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))`,
+            }}
+          >
             {row.map((image, colIndex) => (
               // Each image is an individual grid item
-              <div key={colIndex} className="grid-item">
+              <div key={colIndex} className="grid-item w-fit mx-auto">
                 <GeneratedImage
                   image={image}
                   caption={captions[rowIndex][colIndex]}
                   id={id}
+                  showRedo={showRedo}
                 />
               </div>
             ))}

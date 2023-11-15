@@ -7,10 +7,12 @@ function GeneratedImage({
   image,
   caption,
   id,
+  showRedo
 }: {
   image: string;
   caption: string;
   id: string;
+  showRedo?: boolean;
 }) {
   const [imageData, setImageData] = useState(image);
   const [loading, setLoading] = useState(false);
@@ -26,12 +28,12 @@ function GeneratedImage({
 
   return (
     <>
-      <div className="relative m-2 bg-white rounded-xl max-w-lg max-h-xl mx-auto">
+      <div className="relative m-2 bg-white rounded-xl max-w-xs max-h-xl mx-auto">
         {loading ? (
           <span className="loading loading-dots mx-auto bg-tertiary-navy"></span>
         ) : (
           <>
-            <div className="absolute -top-5 -left-5 z-10">
+            <div className={`absolute -top-5 -left-5 z-10 ${showRedo ? "": "hidden"}`}>
               <button
                 onClick={handleRegenerate}
                 title="Regenerate Image"
@@ -44,7 +46,7 @@ function GeneratedImage({
               <img
                 src={imageData}
                 className="object-cover w-full h-full"
-                alt={`Image`}
+                alt={`Generated Image`}
               />
             </div>
             <p className="p-2 text-center text-sm font-medium text-black">

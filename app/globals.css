@@ -62,3 +62,42 @@ input[type='radio']:checked + label {
   align-items: center;
   justify-content: flex-end;
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust the minmax values based on the desired size of the squares */
+  gap: 10px; /* Adjust the gap between squares */
+  padding: 10px;
+}
+
+.grid-item {
+  background: white;
+  border: 1px solid #ccc; /* Optional, adds a border around each square */
+  border-radius: 8px; /* Optional, rounds the corners of the squares */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+}
+
+.caption {
+  text-align: center;
+  font-weight: bold;
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 2px solid #e5e7eb; 
+  border-radius: 0.5rem; 
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1; 
+}

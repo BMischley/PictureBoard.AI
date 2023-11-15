@@ -7,6 +7,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "@/firebase.config";
 import { set } from "firebase/database";
 import { getUserPictureboard } from "@/utils/user/profileMethods";
+import Link from "next/link";
 
 interface ImageResponse {
   url: string;
@@ -32,17 +33,37 @@ export default async function Home({ params }: { params: { id: string } }) {
   const pictureboard = await getUserPictureboard(params.id);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-24 bg-gray-200">
-      <div className="-mt-56 mb-16">
-        <>
-          <h1 className=" text-3xl font-extrabold underline text-tertiary-navy decoration-seconday-blue">
-            Done!
-          </h1>
-        </>
-      </div>
-      <div>
-        <Display images={pictureboard.images} captions={pictureboard.prompts} id={params.id}/>
-      </div>
-    </main>
+    <main className="flex flex-col items-center justify-center py-24 bg-gray-200">
+    <div className="mb-16 flex items-center">
+      <Link href="/pictureboard">
+        <button className="mr-4">
+          {/* Replace with your back arrow icon if available */}
+          <svg
+            className="h-6 w-6 text-gray-600"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+      </Link>
+      <input
+        className="text-3xl font-extrabold border-b-2 bg-gray-200 border-gray-300 focus:outline-none focus:border-tertiary-navy"
+        placeholder="Pictureboard Name"
+        defaultValue={""}
+      />
+    </div>
+    <div className="w-full max-w-4xl px-4 py-8 mx-auto bg-white rounded-lg shadow-md">
+      <Display
+        images={pictureboard.images}
+        captions={pictureboard.prompts}
+        id={params.id}
+      />
+    </div>
+  </main>
   );
 }

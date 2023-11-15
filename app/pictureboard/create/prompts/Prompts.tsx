@@ -27,7 +27,7 @@ import {
 import { useSubmissionContext } from "@/components/submission/SubmissionContext";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller, useFieldArray, set } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname, useParams } from "next/navigation";
 import { auth } from "@/firebase.config";
@@ -43,6 +43,7 @@ function Info() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
+  const [isLoading, setIsLoading] = useState(false);
   const { prompts, dispatch, info, style } = useSubmissionContext();
   const defaultValues = {
     prompts: [[""]],
@@ -119,6 +120,7 @@ function Info() {
     let copiedInfo = { ...info, style, ...formValues };
 
     try {
+      setIsLoading(true);
       const res = await submitMutation.mutateAsync(copiedInfo);
       console.log(res);
       if ("error" in res) {
@@ -173,79 +175,97 @@ function Info() {
     }
   };
   return (
-    <div>
-      <Form {...form}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          id="info"
-          className="p-2 mt-6 mb-8"
-        >
-          {fields.map((row, rowIndex) => (
-            <FormItem key={row.id}>
-              <div className="flex m-1">
-                {getValues(`prompts.${rowIndex}`).map((prompt, columnIndex) => (
-                  <FormField
-                    key={`${row.id}-${columnIndex}`}
-                    control={control}
-                    name={`prompts.${rowIndex}.${columnIndex}`}
-                    render={({ field }) => (
-                      <FormControl className="">
-                        <Input
-                          placeholder="prompt"
-                          {...field}
-                          type="text"
-                          className="w-full max-w-xs text-xs"
-                        />
-                      </FormControl>
-                    )}
-                  />
-                ))}
-                <button type="button" onClick={addColumn} className="text-2xl">
-                  +
-                </button>
-                {getValues(`prompts.${rowIndex}`).length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      removeColumn(getValues(`prompts.${rowIndex}`).length - 1)
-                    }
-                    className="text-2xl"
-                  >
-                    -
-                  </button>
-                )}
-              </div>
-            </FormItem>
-          ))}
-          <button
-            type="button"
-            onClick={addRow}
-            className="text-2xl text-center"
-          >
-            +
-          </button>
-          {fields.length > 1 && (
-            <button
-              type="button"
-              onClick={() => removeRow(fields.length - 1)}
-              className="text-2xl"
+    <>
+      {isLoading ? (
+        <div className="">
+          <div className="w-fit mx-auto mt-24 mb-16">
+            <span className="loading loading-dots mx-auto bg-tertiary-navy"></span>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <Form {...form}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              id="info"
+              className="p-2 mt-6 mb-8"
             >
-              -
-            </button>
-          )}
-        </form>
-      </Form>
-      <NavWrapper>
-        <NavButtons
-          onClickBack={handleBack}
-          onClickForward={handleForward}
-          disabledBack={false}
-          disabledForward={false}
-          forwardText="Submit"
-          forForward="info"
-        />
-      </NavWrapper>
-    </div>
+              {fields.map((row, rowIndex) => (
+                <FormItem key={row.id}>
+                  <div className="flex m-1">
+                    {getValues(`prompts.${rowIndex}`).map(
+                      (prompt, columnIndex) => (
+                        <FormField
+                          key={`${row.id}-${columnIndex}`}
+                          control={control}
+                          name={`prompts.${rowIndex}.${columnIndex}`}
+                          render={({ field }) => (
+                            <FormControl className="">
+                              <Input
+                                placeholder="prompt"
+                                {...field}
+                                type="text"
+                                className="w-full max-w-xs text-xs"
+                              />
+                            </FormControl>
+                          )}
+                        />
+                      )
+                    )}
+                    <button
+                      type="button"
+                      onClick={addColumn}
+                      className="text-2xl"
+                    >
+                      +
+                    </button>
+                    {getValues(`prompts.${rowIndex}`).length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          removeColumn(
+                            getValues(`prompts.${rowIndex}`).length - 1
+                          )
+                        }
+                        className="text-2xl"
+                      >
+                        -
+                      </button>
+                    )}
+                  </div>
+                </FormItem>
+              ))}
+              <button
+                type="button"
+                onClick={addRow}
+                className="text-2xl text-center"
+              >
+                +
+              </button>
+              {fields.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeRow(fields.length - 1)}
+                  className="text-2xl"
+                >
+                  -
+                </button>
+              )}
+            </form>
+          </Form>
+          <NavWrapper>
+            <NavButtons
+              onClickBack={handleBack}
+              onClickForward={handleForward}
+              disabledBack={false}
+              disabledForward={false}
+              forwardText="Submit"
+              forForward="info"
+            />
+          </NavWrapper>
+        </div>
+      )}
+    </>
   );
 }
 

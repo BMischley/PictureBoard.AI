@@ -13,7 +13,7 @@ import FileSaver from "file-saver";
 function NavElement({
   images,
   captions,
-  id
+  id,
 }: {
   images: string[][];
   captions: string[][];
@@ -21,29 +21,41 @@ function NavElement({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-	const exportPictureboard = useCallback(() => {
-		if (ref.current === null) {
-			return;
-		}
+  const exportPictureboard = useCallback(() => {
+    if (ref.current === null) {
+      return;
+    }
 
-		toBlob(ref.current)
-			.then(function (blob) {
-				if (blob !== null) {
-					FileSaver.saveAs(blob, "my-pictureboard.png");
-				}
-			})
-			.catch((err) => {
-				console.log("export error: ", err);
-			});
-  }, [ref])
-
+    toBlob(ref.current)
+      .then(function (blob) {
+        if (blob !== null) {
+          FileSaver.saveAs(blob, "my-pictureboard.png");
+        }
+      })
+      .catch((err) => {
+        console.log("export error: ", err);
+      });
+  }, [ref]);
+  console.log(images);
+  const numCols = Math.min(images.length > 0 ? images[0].length : 0, 5);
+  const colClass = `grid-cols-${numCols}`;
+  const gridItemWidth = `w-full md:w-${Math.floor(12 / numCols)}/12`;
+  console.log(colClass);
   return (
     <>
-      <div className="grid grid-flow-col-dense" ref={ref}>
+    <div ref={ref} className="mx-auto p-4">
         {images.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex flex-col">
-            {row.map((col, colIndex) => (
-              <GeneratedImage key={colIndex} image={col} caption={captions[rowIndex][colIndex]} id={id}/>
+          // Each row is a div with grid and three columns
+          <div key={rowIndex} className={`grid ${colClass} gap-4`}>
+            {row.map((image, colIndex) => (
+              // Each image is an individual grid item
+              <div key={colIndex} className="grid-item">
+                <GeneratedImage
+                  image={image}
+                  caption={captions[rowIndex][colIndex]}
+                  id={id}
+                />
+              </div>
             ))}
           </div>
         ))}

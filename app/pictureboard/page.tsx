@@ -41,7 +41,7 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false); // TODO: use this to show the images
   const [isCooking, setIsCooking] = useState(false); // TODO: use this to show the images
   const [pictureBoards, setPictureBoards] = useState([
-    { name: "test", width: 10, height: 10 },
+    { name: "Dinosaurs", width: 5, height: 5 },
   ]);
   const tableStyles = {
     boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",

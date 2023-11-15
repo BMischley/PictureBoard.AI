@@ -18,7 +18,7 @@ const reviews = [
       "PictureBoard is great! It let me express what I wanted to say in a way that was easy and fun!",
     name: "Blake Mischley",
     college: "Coder",
-    photo: "/review-pictureboard.png",
+    photo: "/minimalistic-review.png",
   },
   {
     header: '"I love it!"',

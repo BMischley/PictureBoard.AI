@@ -17,34 +17,9 @@ interface ImageResponse {
   url: string;
 }
 
-async function fetchImage(prompt: string): Promise<string | null> {
-  console.log(prompt);
-  const generateImage = httpsCallable(functions, "generate_image");
-
-  try {
-    const result = await generateImage({ prompt: prompt });
-    const data = result.data as ImageResponse; // Type assertion here
-    const url = data.url;
-    console.log(url);
-    return url;
-  } catch (error) {
-    console.error("Error calling generate_image:", error);
-    return null;
-  }
-}
-
 export default async function Home({ params }: { params: { id: string } }) {
   const pictureboard = await getUserPictureboard(params.id);
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-    const formData = new FormData(event.target);
-    const newName = formData.get("name"); // 'name' is the name attribute of the input field
-
-    // Call your API or renaming function here
-    console.log("Renaming pictureboard", params.id, "to", newName);
-    // replace console.log with your actual rename function
-  };
   return (
     <main className="flex flex-col items-center justify-center py-16 bg-gray-200">
       <div className="mb-12 flex items-center">
@@ -72,6 +47,14 @@ export default async function Home({ params }: { params: { id: string } }) {
           images={pictureboard.images}
           captions={pictureboard.prompts}
           id={params.id}
+          name={pictureboard.name
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/&/g, "-and-")
+            .replace(/[^\w\-]+/g, "")
+            .replace(/\-\-+/g, "-")}
         />
       </div>
     </main>

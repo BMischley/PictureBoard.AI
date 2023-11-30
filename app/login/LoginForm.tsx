@@ -192,7 +192,7 @@ function LoginForm() {
               </div>
 
               <div className="flex justify-center mt-[50px]">
-                <button className="btn bg-tertiary-navy h-[40px] w-[320px]">
+                <button className="btn w-3/4 mx-auto mt-10 md:w-1/3 ">
                   Log in
                 </button>
               </div>

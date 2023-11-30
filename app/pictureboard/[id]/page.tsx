@@ -6,7 +6,11 @@ import axios from "axios";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/firebase.config";
 import { set } from "firebase/database";
-import { getUserPictureboard } from "@/utils/user/profileMethods";
+import {
+  getUserPictureboard,
+  renamePictureboard,
+} from "@/utils/user/profileMethods";
+import NameInput from "./NameInput";
 import Link from "next/link";
 
 interface ImageResponse {
@@ -32,6 +36,15 @@ async function fetchImage(prompt: string): Promise<string | null> {
 export default async function Home({ params }: { params: { id: string } }) {
   const pictureboard = await getUserPictureboard(params.id);
 
+  const handleSubmit = (event: any) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const formData = new FormData(event.target);
+    const newName = formData.get("name"); // 'name' is the name attribute of the input field
+
+    // Call your API or renaming function here
+    console.log("Renaming pictureboard", params.id, "to", newName);
+    // replace console.log with your actual rename function
+  };
   return (
     <main className="flex flex-col items-center justify-center py-16 bg-gray-200">
       <div className="mb-12 flex items-center">
@@ -51,12 +64,9 @@ export default async function Home({ params }: { params: { id: string } }) {
             </svg>
           </button>
         </Link>
-        <input
-          className="text-3xl font-extrabold border-b-2 bg-gray-200 border-gray-300 focus:outline-none focus:border-tertiary-navy"
-          placeholder="Pictureboard Name"
-          defaultValue={""}
-        />
+        <NameInput name={pictureboard.name} id={params.id} />
       </div>
+
       <div className="w-full max-w-4xl px-4 py-8 mx-auto bg-white rounded-lg shadow-md">
         <Display
           images={pictureboard.images}

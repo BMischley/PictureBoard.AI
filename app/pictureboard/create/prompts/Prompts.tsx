@@ -119,6 +119,22 @@ function Info() {
     const formValues = getValues(); // This should give you the form state
     let copiedInfo = { ...info, style, ...formValues };
 
+    // Check for empty values in the grid
+    let found_empty = false
+    const prompts = getValues("prompts");
+    prompts.map((row)=>(
+      row.map((val)=>{
+        if(val === ''){
+          found_empty = true;
+        }
+      })
+    ))
+
+    if (found_empty){
+      alert("There are still empty prompts! Please enter a prompt into every grid input field.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const res = await submitMutation.mutateAsync(copiedInfo);

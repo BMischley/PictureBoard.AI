@@ -180,15 +180,6 @@ function LoginForm() {
                     <span className="label-text text-sm pl-2">Remember Me</span>
                   </label>
                 </div>
-
-                <div className="min-w-max">
-                  <Link
-                    href={"/login/recovery"}
-                    className="text-primary-red text-sm underline"
-                  >
-                    Forgot password
-                  </Link>
-                </div>
               </div>
 
               <div className="flex justify-center mt-[50px]">

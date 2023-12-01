@@ -14,35 +14,48 @@ import { set } from "@firebase/database";
 
 function NavElement({
   images,
+  name,
   captions,
   id,
 }: {
   images: string[][];
+  name: string;
   captions: string[][];
   id: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [showRedo, setShowRedo] = useState(true);
-  const exportPictureboard = () => {
+  const exportPictureboard = async () => {
     setShowRedo(false);
 
-    if (ref.current === null) {
+    if (!ref.current) {
+      setShowRedo(true);
       return;
     }
 
-    toPng(ref.current, { cacheBust: false })
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.download = "my-image-name.png";
-        link.href = dataUrl;
-        link.click();
-        setShowRedo(true);
+    try {
+      // Attempt to generate the PNG multiple times
+      await toPng(ref.current, { cacheBust: true });
+      await toPng(ref.current, { cacheBust: true });
+      const dataUrl = await toPng(ref.current, { cacheBust: true });
 
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      if (dataUrl) {
+        if(name === "untitled-picture-board") {
+          FileSaver.saveAs(dataUrl, `${name}.png`);
 
+        } else{
+          FileSaver.saveAs(dataUrl, `${name}-picture-board.png`);
+
+        }
+      } else {
+        // Handle the case where dataUrl is null
+        console.error("Failed to generate the image.");
+      }
+    } catch (err) {
+      console.error("Error exporting pictureboard:", err);
+    } finally {
+      setShowRedo(true);
+    }
   };
 
   console.log(showRedo);

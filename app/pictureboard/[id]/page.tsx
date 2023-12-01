@@ -6,27 +6,15 @@ import axios from "axios";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/firebase.config";
 import { set } from "firebase/database";
-import { getUserPictureboard } from "@/utils/user/profileMethods";
+import {
+  getUserPictureboard,
+  renamePictureboard,
+} from "@/utils/user/profileMethods";
+import NameInput from "./NameInput";
 import Link from "next/link";
 
 interface ImageResponse {
   url: string;
-}
-
-async function fetchImage(prompt: string): Promise<string | null> {
-  console.log(prompt);
-  const generateImage = httpsCallable(functions, "generate_image");
-
-  try {
-    const result = await generateImage({ prompt: prompt });
-    const data = result.data as ImageResponse; // Type assertion here
-    const url = data.url;
-    console.log(url);
-    return url;
-  } catch (error) {
-    console.error("Error calling generate_image:", error);
-    return null;
-  }
 }
 
 export default async function Home({ params }: { params: { id: string } }) {
@@ -51,17 +39,22 @@ export default async function Home({ params }: { params: { id: string } }) {
             </svg>
           </button>
         </Link>
-        <input
-          className="text-3xl font-extrabold border-b-2 bg-gray-200 border-gray-300 focus:outline-none focus:border-tertiary-navy"
-          placeholder="Pictureboard Name"
-          defaultValue={""}
-        />
+        <NameInput name={pictureboard.name} id={params.id} />
       </div>
+
       <div className="w-full max-w-4xl px-4 py-8 mx-auto bg-white rounded-lg shadow-md">
         <Display
           images={pictureboard.images}
           captions={pictureboard.prompts}
           id={params.id}
+          name={pictureboard.name
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/&/g, "-and-")
+            .replace(/[^\w\-]+/g, "")
+            .replace(/\-\-+/g, "-")}
         />
       </div>
     </main>

@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { User2Icon, UserCircle } from "lucide-react";
 
-
 function ProfileMenu() {
   console.log(auth.currentUser);
 

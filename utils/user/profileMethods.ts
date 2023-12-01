@@ -29,6 +29,7 @@ export async function updateName(
   return await setDoc(doc(db, "users", uid), data, { merge: true });
 }
 
+
 export async function updatePrivateDoc(uid: string, data: UserPrivate) {
   return await setDoc(
     doc(db, "users_private", uid),
@@ -75,6 +76,7 @@ interface Pictureboard {
   phoneNumber?: string;
   uidAuth?: string;
   createdAt?: Date; // assuming createdAt is a date
+  name: string;
 }
 
 
@@ -106,10 +108,28 @@ export async function getUserPictureboard(pictureboard_id: string): Promise<Pict
       prompts: promptsMatrix,
       images: imagesMatrix,
       email: data.email,
+      name: data.name ? data.name : "Untitled Picture Board",
       phoneNumber: data.phoneNumber,
       uidAuth: data.uidAuth,
       createdAt: data.createdAt
     };
+  } else {
+    console.log("No such document!");
+    throw new Error("No such document!");
+  }
+}
+
+
+export async function renamePictureboard(pictureboard_id: string, name: string) {
+  const docRef = doc(db, "pictureboards", pictureboard_id);
+  const docSnap = await getDoc(docRef);
+
+  
+  if (docSnap.exists()) {
+    //Setdoc with merge true the name of the pictureboard
+    await setDoc(docRef, { name: name }, { merge: true });
+
+  
   } else {
     console.log("No such document!");
     throw new Error("No such document!");

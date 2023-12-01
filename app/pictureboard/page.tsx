@@ -1,48 +1,43 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Submit from "@/components/pictureboard/Submit";
-import Display from "@/components/pictureboard/Display";
-import { useAuthStore } from "@/stores/AuthStore";
-import { Sub } from "@radix-ui/react-navigation-menu";
-import axios from "axios";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "@/firebase.config";
-import { set } from "firebase/database";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 
+import TablePictureboards from "./TablePictureboards";
 // const imageURL = "https://tressays.files.wordpress.com/2015/09/test-clip-art-cpa-school-test.png"
 // const testImages = [[imageURL, imageURL],[imageURL, imageURL]]
+import { getUserPictureboards } from "@/utils/user/accountMethods";
+import { auth } from "@/firebase.config";
+import { User } from "@firebase/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { set } from "@firebase/database";
 
 interface ImageResponse {
   url: string;
 }
 
-async function fetchImage(prompt: string): Promise<string | null> {
-  console.log(prompt);
-  const generateImage = httpsCallable(functions, "generate_image");
-
-  try {
-    const result = await generateImage({ prompt: prompt });
-    const data = result.data as ImageResponse; // Type assertion here
-    const url = data.url;
-    console.log(url);
-    return url;
-  } catch (error) {
-    console.error("Error calling generate_image:", error);
-    return null;
-  }
-}
-
 export default function Home() {
-  const [matrix, setMatrix] = useState([[""]]);
-  const [images, setImages] = useState<any[][]>([[]]);
-  const [img64Data, setImg64Data] = useState<any[][]>([[]]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const router = useRouter();
+  const [pictureboards, setPictureboards] = useState<any>([]);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user); // user is of type User | null
+      if (user) {
+        console.log("Logged in user UID:", user.uid);
+        // Fetch the pictureboards for the logged-in user
+        getUserPictureboards(user.uid).then((pictureboards) => {
+          setPictureboards(pictureboards);
+          console.log("Pictureboards:", pictureboards);
+        });
+      } else {
+        console.log("No user logged in.");
+      }
+    });
 
-  const [submitted, setSubmitted] = useState(false); // TODO: use this to show the images
-  const [isCooking, setIsCooking] = useState(false); // TODO: use this to show the images
-  const [pictureBoards, setPictureBoards] = useState([
-    { name: "Dinosaurs", width: 5, height: 5 },
-  ]);
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
   const tableStyles = {
     boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
     transition: "0.3s",
@@ -64,53 +59,6 @@ export default function Home() {
     cursor: "pointer",
   };
 
-  const viewStyles: React.CSSProperties = {
-    position: "absolute",
-    right: "15px",
-    opacity: 0,
-    transition: "opacity 0.3s ease",
-  };
-
-  const setLoading = useAuthStore((state) => state.setLoading);
-
-  const handleFetchImages = async () => {
-    setIsCooking(true);
-    // map over the matrix to create a 2D array of promises
-    const imagePromises = matrix.map(
-      (row) => Promise.all(row.map((item) => fetchImage(item))) // for each item in the row, call fetchImage
-    );
-
-    // wait for all promises to resolve
-    Promise.all(imagePromises)
-      .then((newImages) => {
-        console.log(newImages); // log new images
-        setImages(newImages); // set the images state
-        setIsCooking(false);
-        setSubmitted(true);
-      })
-      .catch((error) => {
-        console.error(error); // log any error that occurred during the promises
-        setIsCooking(false); // ensure loading spinner is turned off even if there's an error
-      });
-  };
-
-  useEffect(() => {
-    console.log("Updated images state:", images);
-    console.log("matrix state:", matrix);
-
-    // Get images in base64 format to bypass CORS errors when exporting
-    const data = { data: images };
-    fetch("/api/convert/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((data) => setImg64Data(data.result));
-  }, [images]);
-
   return (
     <>
       <section className="flex justify-between items-center p-6 bg-white shadow-md border-t-2">
@@ -131,11 +79,11 @@ export default function Home() {
               <tr>
                 <th style={thStyles}>Name of the Board</th>
                 <th style={thStyles}>Dimensions</th>
-                <th style={thStyles}> </th>
+                <th style={thStyles}> {" "}</th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {pictureBoards.length === 0 ? (
+              {pictureboards.length === 0 ? (
                 <tr>
                   <td
                     colSpan={3}
@@ -150,12 +98,12 @@ export default function Home() {
                   </td>
                 </tr>
               ) : (
-                pictureBoards.map((board, index) => (
-                  <tr key={index} className="tableRow" style={rowStyles}>
+                pictureboards.map((board: any, index: any) => (
+                  <tr key={index} className="tableRow" style={rowStyles} onClick={()=>router.push(`/pictureboard/${board.id}`)}>
                     <td className=" px-4 py-3 text-center font-semibold">
-                      {board.name}
+                      {board.name ? board.name : "Untitled Picture Board"}
                     </td>
-                    <td className=" px-4 py-3 text-center ">{`${board.width} x ${board.height}`}</td>
+                    <td className=" px-4 py-3 text-center ">{`${board.prompts.length} x ${board.prompts[0].length}`}</td>
                     <td className=" px-4 py-3 cellWithView text-center">
                       <span className="viewLink text-center mr-6 font-bold">
                         View →

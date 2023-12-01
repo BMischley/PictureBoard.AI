@@ -9,10 +9,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-
+import { User } from "@firebase/auth";
+import { auth } from "@/firebase.config";
 import { Input } from "@/components/ui/input";
 import ErrorWarning from "@/public/error-warning-fill.svg";
-
+import { getUserProfile } from "@/utils/user/profileMethods";
 import NavButtons from "@/components/submission/NavButtons";
 import NavWrapper from "@/components/submission/NavWrapper";
 import {
@@ -101,6 +102,36 @@ function Info() {
     }
   }, [router]);
 
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [pictureBoards, setPictureBoards] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserBio = async () => {
+      // Only proceed if currentUser and currentUser.uid are defined
+      if (currentUser?.uid) {
+        if (!form.getValues("selfDescription")) {
+          const bio = await getUserProfile(currentUser.uid);
+          console.log(bio);
+          if (bio && bio.selfDescription) {
+            form.setValue("selfDescription", bio.selfDescription);
+            form.setValue("language", bio.language);
+
+          }
+        }
+      }
+    };
+  
+    fetchUserBio();
+  }, [form, currentUser]);
+
   return (
     <div>
       <Form {...form}>
@@ -149,7 +180,6 @@ function Info() {
                     >
                       <SelectTrigger aria-label="Select a style">
                         <SelectValue placeholder="Select a style" />
-                        
                       </SelectTrigger>
                       <SelectContent>
                         {languages.map((style) => (

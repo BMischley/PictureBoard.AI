@@ -162,7 +162,6 @@ const FormMessage = React.forwardRef<
       )}
       {...props}
     >
-      <ErrorWarning className="flex-shrink-0" />
       {body}
     </p>
   );

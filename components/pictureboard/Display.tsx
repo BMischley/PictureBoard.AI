@@ -10,7 +10,10 @@ import { useCallback, useRef } from "react";
 import { toBlob } from "html-to-image";
 import { toPng } from "html-to-image";
 import FileSaver from "file-saver";
+import { arrayMoveImmutable } from 'array-move';
 import { set } from "@firebase/database";
+
+import { AnimatePresence, motion, Point } from "framer-motion";
 
 function NavElement({
   images,
@@ -63,9 +66,12 @@ function NavElement({
   const colClass = `grid-cols-${numCols}`;
 
   console.log(colClass);
+
+
   return (
     <>
       <div ref={ref} className="mx-auto p-4 ">
+     
         {images.map((row, rowIndex) => (
           // Each row is a div with grid and three columns
           <div
@@ -76,6 +82,7 @@ function NavElement({
               gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))`,
             }}
           >
+
             {row.map((image, colIndex) => (
               // Each image is an individual grid item
               <div key={colIndex} className="grid-item w-fit mx-auto mt-6">

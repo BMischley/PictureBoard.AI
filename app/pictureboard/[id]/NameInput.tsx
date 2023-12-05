@@ -6,7 +6,7 @@ import { renamePictureboard } from "@/utils/user/profileMethods";
 
 export default function Home({ id, name }: { id: string; name: string }) {
   const [newName, setNewName] = useState("");
-
+  console.log(name)
   const handleInputChange = (event: any) => {
     setNewName(event.target.value);
   };
